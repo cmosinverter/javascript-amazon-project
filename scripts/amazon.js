@@ -1,6 +1,8 @@
 import { cart, addToCart } from '../data/cart.js';
 import { products } from '../data/products.js';
 
+updateCartQuantity();
+
 let productsHTML = '';
 
 products.forEach(product => {
@@ -60,15 +62,14 @@ products.forEach(product => {
 
 document.querySelector('.products-grid').innerHTML = productsHTML;
 
-
-
-function updateCartQuantity() {
+export function updateCartQuantity() {
   let cartQuantity = 0;
   cart.forEach((cartItem) => {
     cartQuantity += cartItem.quantity;
   });
   document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
-}
+  return cartQuantity;
+};
 
 
 let timeoutId;
@@ -94,3 +95,4 @@ document.querySelectorAll('.js-add-to-cart').forEach((button) => {
 
     });
 });
+
