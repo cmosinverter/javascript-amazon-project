@@ -1,8 +1,10 @@
 import { cart, removeFromCart } from '../data/cart.js';
 import { products } from '../data/products.js';
-import { formatCurrency } from './utils/money.js';
+import formatCurrency from './utils/money.js';
+import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
 
-updateQuantity(0, 0);
+updateQuantity(null, null);
+const today = dayjs();
 
 let cartSummarytHTML = '';
 cart.forEach((cartItem) => {
@@ -60,7 +62,7 @@ cartSummarytHTML +=
                 name="delivery-option-${productId}">
                 <div>
                 <div class="delivery-option-date">
-                    Tuesday, June 21
+                    ${today.add(7, 'days').format('dddd, MMMM D')}
                 </div>
                 <div class="delivery-option-price">
                     FREE Shipping
@@ -73,7 +75,7 @@ cartSummarytHTML +=
                 name="delivery-option-${productId}">
                 <div>
                 <div class="delivery-option-date">
-                    Wednesday, June 15
+                    ${today.add(3, 'days').format('dddd, MMMM D')}
                 </div>
                 <div class="delivery-option-price">
                     $4.99 - Shipping
@@ -86,7 +88,7 @@ cartSummarytHTML +=
                 name="delivery-option-${productId}">
                 <div>
                 <div class="delivery-option-date">
-                    Monday, June 13
+                    ${today.add(1, 'days').format('dddd, MMMM D')}
                 </div>
                 <div class="delivery-option-price">
                     $9.99 - Shipping
@@ -120,7 +122,7 @@ document.querySelectorAll('.js-delete-link')
         const productId  = link.dataset.productId;
         removeFromCart(productId);
         document.querySelector(`.js-cart-item-container-${productId}`).remove();
-        updateQuantity(productId, 0);
+        updateQuantity(null, null);
     });
 })
 
@@ -156,11 +158,17 @@ document.querySelectorAll('.js-save-quantity-link')
             alert('Quantity must be at least 0 and less than 1000');
             return;
         }
-        newQuantity = (newQuantity >= 0) && (newQuantity < 1000) ? newQuantity : OldQuantity;
-        quantityLabel.textContent = newQuantity ? newQuantity : OldQuantity;
-        container.classList.remove('is-editing-quantity');
-    
 
+        if (!quantityInput.value) {
+            newQuantity = OldQuantity;
+        } else if (newQuantity === 0) {
+            removeFromCart(productId);
+            document.querySelector(`.js-cart-item-container-${productId}`).remove();
+            updateQuantity(null, null);
+        } else {
+            quantityLabel.textContent = newQuantity;
+        }
+        container.classList.remove('is-editing-quantity');
         updateQuantity(productId, newQuantity);
     });
 })
