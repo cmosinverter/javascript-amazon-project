@@ -7,7 +7,7 @@ import { deliveryOptions } from '../data/deliveryOptions.js';
 function renderOrderSummary() {
 
     const today = dayjs();
-    updateQuantity();
+    updateItemQuantity();
     let cartSummarytHTML = '';
     cart.forEach((cartItem) => {
 
@@ -106,7 +106,7 @@ function renderOrderSummary() {
         return html;
     }
 
-    function updateQuantity() {
+    function updateItemQuantity() {
 
         let cartQuantity = 0;
         cart.forEach((cartItem) => {
@@ -116,10 +116,14 @@ function renderOrderSummary() {
     }
 
     let itemsTotal = 0;
-
+    let shippingCostTotal = 0;
+    let totalBeforeTax = 0;
+    let tax = 0;
+    let orderTotal = 0;
     cart.forEach((cartItem) => {
         const productId = cartItem.productId;
         const quantity = cartItem.quantity;
+        const deliveryOptionId = cartItem.deliveryOptionId;
 
         let matchingItem;
         products.forEach((product) => {
@@ -128,9 +132,23 @@ function renderOrderSummary() {
             }
         });
 
+        let shippingCost = 0;
+
+        if (deliveryOptionId === '2') {
+            shippingCost = 499;
+        } else if (deliveryOptionId === '3') {
+            shippingCost = 999;
+        }
+
+        shippingCostTotal += shippingCost;
         itemsTotal += matchingItem.priceCents * quantity;
     });
+
+    totalBeforeTax = formatCurrency(itemsTotal + shippingCostTotal);
     itemsTotal = formatCurrency(itemsTotal);
+    shippingCostTotal = formatCurrency(shippingCostTotal);
+    tax = formatCurrency(Number(totalBeforeTax) * 10);
+    orderTotal = formatCurrency(Number(totalBeforeTax) * 100 + Number(tax) * 100);
 
     let paymentSummaryHTML = `
 
@@ -145,22 +163,22 @@ function renderOrderSummary() {
 
             <div class="payment-summary-row">
                 <div>Shipping &amp; handling:</div>
-                <div class="payment-summary-money">$4.99</div>
+                <div class="payment-summary-money">$${shippingCostTotal}</div>
             </div>
 
             <div class="payment-summary-row subtotal-row">
                 <div>Total before tax:</div>
-                <div class="payment-summary-money">$47.74</div>
+                <div class="payment-summary-money">$${totalBeforeTax}</div>
             </div>
 
             <div class="payment-summary-row">
                 <div>Estimated tax (10%):</div>
-                <div class="payment-summary-money">$4.77</div>
+                <div class="payment-summary-money">$${tax}</div>
             </div>
 
             <div class="payment-summary-row total-row">
                 <div>Order total:</div>
-                <div class="payment-summary-money">$52.51</div>
+                <div class="payment-summary-money">$${orderTotal}</div>
             </div>
 
             <button class="place-order-button button-primary">
@@ -173,10 +191,11 @@ function renderOrderSummary() {
     document.querySelectorAll('.js-delete-link')
     .forEach((link) => {
         link.addEventListener('click', () => {
-            const productId  = link.dataset.productId;
+            const {productId} = link.dataset;
             removeFromCart(productId);
             document.querySelector(`.js-cart-item-container-${productId}`).remove();
-            updateQuantity();
+            updateItemQuantity();
+            renderOrderSummary()
         });
     })
 
@@ -227,7 +246,8 @@ function renderOrderSummary() {
                 });
             }
             container.classList.remove('is-editing-quantity');
-            updateQuantity();
+            updateItemQuantity();
+            renderOrderSummary()
             
         });
     })
