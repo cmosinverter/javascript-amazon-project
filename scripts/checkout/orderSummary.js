@@ -102,29 +102,6 @@ export function renderOrderSummary() {
     }
 
     
-
-
-    cart.forEach((cartItem) => {
-        const productId = cartItem.productId;
-        const deliveryOptionId = cartItem.deliveryOptionId;
-
-        let matchingItem;
-        products.forEach((product) => {
-            if (productId === product.id) {
-                matchingItem = product;
-            }
-        });
-
-        let shippingCost = 0;
-
-        if (deliveryOptionId === '2') {
-            shippingCost = 499;
-        } else if (deliveryOptionId === '3') {
-            shippingCost = 999;
-        }
-
-    });
-    
     document.querySelector('.js-checkout-header-middle-section').innerHTML = `Checkout (<a class="return-to-home-link" href="index.html">${cartQuantity} items</a>)`;
 
     document.querySelector('.js-order-summary').innerHTML = cartSummarytHTML;
