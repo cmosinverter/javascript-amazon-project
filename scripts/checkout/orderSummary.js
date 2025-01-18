@@ -112,7 +112,7 @@ export function renderOrderSummary() {
     .forEach((link) => {
         link.addEventListener('click', () => {
             
-            const productId = link.dataset.productId;
+            const { productId } = link.dataset;
             const container = document.querySelector(`.js-cart-item-container-${productId}`);
             container.classList.add('is-editing-quantity');
             
@@ -120,7 +120,7 @@ export function renderOrderSummary() {
         link.addEventListener('onkeydown', (event) => {
             console.log(event.key);
             if (event.key === 'Enter') {
-                const productId = link.dataset.productId;
+                const { productId } = link.dataset;
                 const container = document.querySelector(`.js-cart-item-container-${productId}`);
                 container.classList.add('is-editing-quantity');
             }
@@ -130,7 +130,7 @@ export function renderOrderSummary() {
     document.querySelectorAll('.js-save-quantity-link')
     .forEach((link) => {
         link.addEventListener('click', () => {
-            const productId = link.dataset.productId;
+            const { productId } = link.dataset;
             const container = document.querySelector(`.js-cart-item-container-${productId}`);
             const quantityLabel = container.querySelector('.quantity-label');
             const OldQuantity = Number(quantityLabel.textContent);
@@ -145,7 +145,6 @@ export function renderOrderSummary() {
                 newQuantity = OldQuantity;
             } else if (newQuantity === 0) {
                 removeFromCart(productId);
-                document.querySelector(`.js-cart-item-container-${productId}`).remove();
             } else {
                 quantityLabel.textContent = newQuantity;
                 cart.forEach((cartItem) => {
