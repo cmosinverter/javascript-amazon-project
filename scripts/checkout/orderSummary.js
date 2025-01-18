@@ -1,7 +1,7 @@
 import { cart, removeFromCart, updateDeliveryOption, saveToStorage } from '../../data/cart.js';
 import { getProduct } from '../../data/products.js';
 import formatCurrency from '../utils/money.js';
-import { deliveryOptions } from '../../data/deliveryOptions.js';
+import { deliveryOptions, getDeliveryDate } from '../../data/deliveryOptions.js';
 import { renderPaymentSummary } from './paymentSummary.js';
 import { renderCheckoutHeader } from './checkoutHeader.js';
 import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
@@ -74,8 +74,7 @@ export function renderOrderSummary() {
         
         let html = '';
         deliveryOptions.forEach((deliveryOption) => {
-            const today = dayjs();
-            const deliveryDate = today.add(deliveryOption.deliveryDays, 'days');
+            const deliveryDate = getDeliveryDate(deliveryOption);
             const deliveryDateFormatted = deliveryDate.format('dddd, MMMM D');
             const priceCents = deliveryOption.priceCents;
             const priceString = priceCents === 0 ? 'FREE Shipping' : `$${formatCurrency(priceCents)} - Shipping`;
