@@ -19,7 +19,7 @@ export function renderOrderSummary() {
         const deliveryDateFormatted = deliveryDate.format('dddd, MMMM D');
 
         cartSummarytHTML += 
-            `<div class="cart-item-container js-cart-item-container-${productId}">
+            `<div class="cart-item-container js-cart-item-container js-cart-item-container-${productId}">
                 <div class="delivery-date">
                     Delivery date: ${deliveryDateFormatted}
                 </div>
@@ -35,7 +35,7 @@ export function renderOrderSummary() {
                     <div class="product-price">
                         $${(formatCurrency(matchingItem.priceCents))}
                     </div>
-                    <div class="product-quantity">
+                    <div class="product-quantity js-product-quantity-${productId}">
                         <span>
                         Quantity: <span class="quantity-label">${quantity}</span>
                         </span>
@@ -45,7 +45,7 @@ export function renderOrderSummary() {
                         </span>
                         <input class="quantity-input">
                         <span class="save-quantity-link link-primary js-save-quantity-link" data-product-id="${productId}">Save</span>
-                        <span class="delete-quantity-link link-primary js-delete-link" data-product-id="${productId}">
+                        <span class="delete-quantity-link link-primary js-delete-link js-delete-link-${productId}" data-product-id="${productId}">
                         Delete
                         </span>
                     </div>
@@ -101,7 +101,12 @@ export function renderOrderSummary() {
         link.addEventListener('click', () => {
             const {productId} = link.dataset;
             removeFromCart(productId);
-            document.querySelector(`.js-cart-item-container-${productId}`).remove();
+
+            console.log(document.querySelectorAll(`.js-cart-item-container`));
+            const container = document.querySelector(`.js-cart-item-container-${productId}`);
+
+            
+            container.remove();
             renderOrderSummary();
             renderPaymentSummary();
             renderCheckoutHeader();
