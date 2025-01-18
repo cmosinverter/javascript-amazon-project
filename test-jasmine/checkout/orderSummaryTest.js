@@ -37,11 +37,14 @@ describe('test suite: render order summary', () => {
     it('removes a product', () => {
         document.querySelector('.js-test-container').innerHTML = `
         <div class="js-order-summary"></div>
+        <div class="js-payment-summary"></div>
+        <div class="js-checkout-header-middle-section"></div>
         `;
         const productId1 = 'e43638ce-6aa0-4b85-b27f-e1d07eb678c6';
         const productId2 = '15b6fc6f-327a-4ec4-896f-486349e85a3d';
         spyOn(localStorage, 'getItem').and.callFake(() => {
-            return JSON.stringify([{
+            return JSON.stringify([
+              {
                 productId: 'e43638ce-6aa0-4b85-b27f-e1d07eb678c6',
                 quantity: 2,
                 deliveryOptionId: '1'
@@ -56,6 +59,10 @@ describe('test suite: render order summary', () => {
         renderOrderSummary();
 
         document.querySelector(`.js-delete-link-${productId1}`).click();
+
+        expect(
+            document.querySelectorAll('.js-cart-item-container').length
+        ).toEqual(1);
 
 
     });
